@@ -12,7 +12,7 @@ using UnityEngine;
 public static class Example
 {
 	[MenuItem( "Tools/Hoge" )]
-	private static void Hode()
+	private static void Hoge()
 	{
 		var searcher = new GuidReferenceSearcherWithRipgrep
 		(
