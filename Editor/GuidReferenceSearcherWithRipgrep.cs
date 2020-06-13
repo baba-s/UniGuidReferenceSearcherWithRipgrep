@@ -24,11 +24,20 @@ namespace Kogane
 		/// コンストラクタ
 		/// </summary>
 		/// <param name="rgExePath">rg.exe のファイルパス</param>
+		public GuidReferenceSearcherWithRipgrep( string rgExePath )
+			: this( rgExePath, string.Empty )
+		{
+		}
+
+		/// <summary>
+		/// コンストラクタ
+		/// </summary>
+		/// <param name="rgExePath">rg.exe のファイルパス</param>
 		/// <param name="ignoreFilePath">無視ファイルのパス</param>
 		public GuidReferenceSearcherWithRipgrep( string rgExePath, string ignoreFilePath )
 		{
 			m_rgExePath      = rgExePath;
-			m_ignoreFilePath = ignoreFilePath;
+			m_ignoreFilePath = ignoreFilePath ?? string.Empty;
 		}
 
 		/// <summary>
@@ -58,8 +67,9 @@ namespace Kogane
 				RedirectStandardOutput = true,
 			};
 
-			var references = new List<string>();
-			var process    = new Process { StartInfo = processStartInfo };
+			var references    = new List<string>();
+			var process       = new Process { StartInfo = processStartInfo };
+			var assetMetaPath = ( assetPath + ".meta" ).Replace( "/", "\\" );
 
 			// ripgrep は検索対象の文字列が含まれているファイルを見つけたらコンソールにパスを出力します
 			// そのため OutputDataReceived を使用することで、
@@ -69,6 +79,7 @@ namespace Kogane
 				var path = e.Data;
 
 				if ( string.IsNullOrWhiteSpace( path ) ) return;
+				if ( path == assetMetaPath ) return;
 
 				references.Add( path.Replace( "\\", "/" ) );
 			}
